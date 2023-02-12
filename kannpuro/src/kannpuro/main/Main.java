@@ -42,10 +42,17 @@ public class Main {
 					
 					sb.delete(0, 2);
 					sb.delete(sb.length()-4, sb.length());
-					Var var = new Var("test");
 					
-					varlist.put(sb.toString(),var);
-					System.out.println("|変数「" + sb + "」を作成しました");
+					if(sb.toString().matches("[A-Za-z]")) {
+						Var var = new Var("null");
+						
+						varlist.put(sb.toString(),var);
+						System.out.println("|変数「" + sb + "」を作成しました");
+					}
+					else {
+						System.err.println("変数" + sb + "は作成できません");
+						continue;
+					}
 				}
 				else if (cmd.startsWith("変数を表示(") && cmd.endsWith(");")) {
 					StringBuffer sb = new StringBuffer(cmd);
@@ -62,9 +69,25 @@ public class Main {
 						continue;
 					}
 				}
+				else if(cmd.startsWith("変数") && cmd.endsWith("に変更;")){
+					String tmp1 = cmd.substring(2, cmd.indexOf("を"));
+					String tmp2 = cmd.substring(cmd.indexOf("を")+1,cmd.indexOf("に"));
+					
+					try {
+						Var v = varlist.get(tmp1);
+						
+						if(tmp2.startsWith("\"") && tmp2.endsWith("\"")) {
+							v = new Var(tmp2);
+						}
+					}
+					catch (Exception e) {
+						System.err.println("変数" + tmp1 + "は存在しません");
+					}
+				}
 				else {
 					System.err.println("構文エラー:" + cmd + "は存在しません");
 				}
+				
 			}
 			finally {
 				
